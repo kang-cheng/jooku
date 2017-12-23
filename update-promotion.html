@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Update Promotion Screen - Jooku</title>
+  <link rel="stylesheet" type="text/css" href="static/css/normalize.css">
+  <link rel="stylesheet" type="text/css" href="static/css/style.css">
+  <script src="https://www.gstatic.com/firebasejs/4.8.1/firebase.js"></script>
+</head>
+<body>
+  <div id="msg">
+  </div>
+  <script>
+    const ele = document.getElementById('msg')
+    const which = window.location.hash.split('#')[1] || 'pizza'
+    var config = {
+      apiKey: "AIzaSyBL9qLwyeg0DMSyI1EnQJjdwSVrcYEFErY",
+      databaseURL: "https://jooku-5e3a7.firebaseio.com"
+    }
+    firebase.initializeApp(config)
+    ele.innerHTML = 'Updating...\nDon\'t leave this page.'
+    firebase.database().ref('promotion').set(which).then(() => {
+      ele.innerHTML = `Promotion Screen is set to "${which.toUpperCase()}"`
+    }).catch(error => {
+      ele.innerHTML = error
+    })
+  </script>
+</body>
+</html>

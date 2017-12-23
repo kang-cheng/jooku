@@ -81,3 +81,25 @@
   background-size: 100%;
   background-repeat: no-repeat;
 }
+
+.qrcode {
+  width: 100vw;
+  height: calc(100vh - 60px);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+.qrcode .row {
+  width: 100vw;
+  margin-bottom: 10vh;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+}
+
+.qrcode .row img {
+  width: 200px;
+  height: 200px;
+}
