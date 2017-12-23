@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Jooku Promotion</title>
+  <link rel="stylesheet" type="text/css" href="static/css/normalize.css">
+  <link rel="stylesheet" type="text/css" href="static/css/style.css">
+  <script src="https://www.gstatic.com/firebasejs/4.8.1/firebase.js"></script>
+  <script src="https://unpkg.com/vue"></script>
+</head>
+<body>
+  <div id="app">
+    <div class="promotion" v-if="image" :style="{ backgroundImage: 'url(static/images/promotion-'+image+'.jpg)' }">
+    </div>
+  </div>
+  <script>
+    var config = {
+      apiKey: "AIzaSyBL9qLwyeg0DMSyI1EnQJjdwSVrcYEFErY",
+      databaseURL: "https://jooku-5e3a7.firebaseio.com"
+    };
+    firebase.initializeApp(config);
+    var app = new Vue({
+      el: '#app',
+      data () {
+        return {
+          image: null
+        }
+      },
+      created () {
+        firebase.database().ref('promotion').on('value', snapshot => {
+          this.image = snapshot.val() || ''
+        })
+      }
+    })
+  </script>
+</body>
+</html>

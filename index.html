@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Jooku</title>
+  <link rel="stylesheet" type="text/css" href="static/css/normalize.css">
+  <link rel="stylesheet" type="text/css" href="static/css/style.css">
+  <script src="https://www.gstatic.com/firebasejs/4.8.1/firebase.js"></script>
+  <script src="https://unpkg.com/vue"></script>
+</head>
+<body>
+  <div id="app">
+    <div class="menu">
+      <div class="out-of-stock" v-if="stock">
+        <div class="row one">
+          <img src="static/images/out-of-stock.png" :style="{ opacity: stock.pizza ? 0 : 1}">
+          <img src="static/images/out-of-stock.png" :style="{ opacity: stock.burger ? 0 : 1}">
+          <img src="static/images/out-of-stock.png" :style="{ opacity: stock.bigBurger ? 0 : 1}">
+        </div>
+        <div class="row two">
+          <img src="static/images/out-of-stock.png" :style="{ opacity: stock.sandwich ? 0 : 1}">
+          <img src="static/images/out-of-stock.png" :style="{ opacity: stock.hotdog ? 0 : 1}">
+          <img src="static/images/out-of-stock.png" :style="{ opacity: stock.drink ? 0 : 1}">
+        </div>
+        <div class="row three">
+          <img src="static/images/out-of-stock.png" :style="{ opacity: stock.salad ? 0 : 1}">
+          <img src="static/images/out-of-stock.png" :style="{ opacity: stock.steak ? 0 : 1}">
+          <img src="static/images/out-of-stock.png" :style="{ opacity: stock.fries ? 0 : 1}">
+        </div>
+      </div>
+      <div class="price">
+        <div class="col one">
+          <span>{{price(menu1.sandwich)}}</span>
+          <span>{{price(menu1.hotdog)}}</span>
+          <span>{{price(menu1.burger)}}</span>
+          <span>{{price(menu1.bigBurger)}}</span>
+        </div>
+        <div class="col two">
+          <span>{{price(menu2.fries)}}</span>
+          <span>{{price(menu2.steak)}}</span>
+          <span>{{price(menu2.pizza)}}</span>
+          <span>{{price(menu2.salad)}}</span>
+        </div>
+        <div class="col three">
+          <span>{{price(drinks.orange)}}</span>
+          <span>{{price(drinks.apple)}}</span>
+          <span>{{price(drinks.lemonade)}}</span>
+          <span>{{price(drinks.cola)}}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script>
+    var config = {
+      apiKey: "AIzaSyBL9qLwyeg0DMSyI1EnQJjdwSVrcYEFErY",
+      databaseURL: "https://jooku-5e3a7.firebaseio.com"
+    };
+    firebase.initializeApp(config);
+    var app = new Vue({
+      el: '#app',
+      data: {
+        stock: null,
+        menu1: {
+          sandwich: 3,
+          hotdog: 4,
+          burger: 3.5,
+          bigBurger: 4.5
+        },
+        menu2: {
+          fries: 1.2,
+          steak: 6.5,
+          pizza: 5,
+          salad: 1
+        },
+        drinks: {
+          orange: 1,
+          apple: 1,
+          lemonade: 1.5,
+          cola: 1.5
+        }
+      },
+      methods: {
+        price (val) {
+          return '£' + parseFloat(Math.round(parseFloat(val) * 100) / 100).toFixed(2)
+        }
+      },
+      created () {
+        firebase.database().ref('menu1').on('value', (snapshot) => {
+          this.menu1 = Object.assign({}, snapshot.val() || {
+            sandwich: 3,
+            hotdog: 4,
+            burger: 3.5,
+            bidBurger: 4.5
+          })
+        })
+        firebase.database().ref('menu2').on('value', (snapshot) => {
+          this.menu2 = Object.assign({}, snapshot.val() || {
+            fries: 1.2,
+            steak: 6.5,
+            pizaa: 5,
+            salad: 1
+          })
+        })
+        firebase.database().ref('drinks').on('value', (snapshot) => {
+          this.drinks = Object.assign({}, snapshot.val() || {
+            orange: 1,
+            apple: 1,
+            lemonade: 1.5,
+            cola: 1.5
+          })
+        })
+        firebase.database().ref('stock').on('value', (snapshot) => {
+          this.stock = Object.assign({}, snapshot.val() || {
+            pizza: false,
+            burger: false,
+            bidBurger: false,
+            sandwich: false,
+            hotdog: false,
+            drink: false,
+            salad: false,
+            steak: false,
+            fries: false
+          })
+        })
+      }
+    })
+  </script>
+</body>
+</html>
