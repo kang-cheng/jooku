@@ -82,7 +82,7 @@
       },
       methods: {
         price (val) {
-          return '£' + parseFloat(Math.round(parseFloat(val) * 100) / 100).toFixed(2)
+          return '£' + parseFloat(val).toFixed(2)
         }
       },
       created () {
