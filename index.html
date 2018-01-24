@@ -7,122 +7,188 @@
   <link rel="stylesheet" type="text/css" href="static/css/normalize.css">
   <link rel="stylesheet" type="text/css" href="static/css/style.css">
   <script src="https://www.gstatic.com/firebasejs/4.8.1/firebase.js"></script>
-  <script src="https://unpkg.com/vue"></script>
 </head>
 <body>
   <div id="app">
     <div class="menu">
-      <div class="out-of-stock" v-if="stock">
+      <div class="out-of-stock">
         <div class="row one">
-          <img src="static/images/out-of-stock.png" :style="{ opacity: stock.pizza ? 0 : 1}">
-          <img src="static/images/out-of-stock.png" :style="{ opacity: stock.burger ? 0 : 1}">
-          <img src="static/images/out-of-stock.png" :style="{ opacity: stock.bigBurger ? 0 : 1}">
+          <img id="ofs-pizza" src="static/images/out-of-stock.png">
+          <img id="ofs-burger" src="static/images/out-of-stock.png">
+          <img id="ofs-bigBurger" src="static/images/out-of-stock.png">
         </div>
         <div class="row two">
-          <img src="static/images/out-of-stock.png" :style="{ opacity: stock.sandwich ? 0 : 1}">
-          <img src="static/images/out-of-stock.png" :style="{ opacity: stock.hotdog ? 0 : 1}">
-          <img src="static/images/out-of-stock.png" :style="{ opacity: stock.drink ? 0 : 1}">
+          <img id="ofs-sandwich" src="static/images/out-of-stock.png">
+          <img id="ofs-hotdog" src="static/images/out-of-stock.png">
+          <img id="ofs-drink" src="static/images/out-of-stock.png">
         </div>
         <div class="row three">
-          <img src="static/images/out-of-stock.png" :style="{ opacity: stock.salad ? 0 : 1}">
-          <img src="static/images/out-of-stock.png" :style="{ opacity: stock.steak ? 0 : 1}">
-          <img src="static/images/out-of-stock.png" :style="{ opacity: stock.fries ? 0 : 1}">
+          <img id="ofs-salad" src="static/images/out-of-stock.png">
+          <img id="ofs-steak" src="static/images/out-of-stock.png">
+          <img id="ofs-fries" src="static/images/out-of-stock.png">
         </div>
       </div>
       <div class="price">
         <div class="col one">
-          <span>{{price(menu1.sandwich)}}</span>
-          <span>{{price(menu1.hotdog)}}</span>
-          <span>{{price(menu1.burger)}}</span>
-          <span>{{price(menu1.bigBurger)}}</span>
+          <span id="sandwich">-</span>
+          <span id="hotdog">-</span>
+          <span id="burger">-</span>
+          <span id="bigBurger">-</span>
         </div>
         <div class="col two">
-          <span>{{price(menu2.fries)}}</span>
-          <span>{{price(menu2.steak)}}</span>
-          <span>{{price(menu2.pizza)}}</span>
-          <span>{{price(menu2.salad)}}</span>
+          <span id="fries">-</span>
+          <span id="steak">-</span>
+          <span id="pizza">-</span>
+          <span id="salad">-</span>
         </div>
         <div class="col three">
-          <span>{{price(drinks.orange)}}</span>
-          <span>{{price(drinks.apple)}}</span>
-          <span>{{price(drinks.lemonade)}}</span>
-          <span>{{price(drinks.cola)}}</span>
+          <span id="orange">-</span>
+          <span id="apple">-</span>
+          <span id="lemonade">-</span>
+          <span id="cola">-</span>
         </div>
       </div>
     </div>
   </div>
   <script>
+    console.log('Is ancient browser?', isAncientBrowser)
     var config = {
       apiKey: "AIzaSyBL9qLwyeg0DMSyI1EnQJjdwSVrcYEFErY",
       databaseURL: "https://jooku-5e3a7.firebaseio.com"
     };
     firebase.initializeApp(config);
-    var app = new Vue({
-      el: '#app',
-      data: {
-        stock: null,
-        menu1: {
-          sandwich: 3,
-          hotdog: 4,
-          burger: 3.5,
-          bigBurger: 4.5
-        },
-        menu2: {
-          fries: 1.2,
-          steak: 6.5,
-          pizza: 5,
-          salad: 1
-        },
-        drinks: {
-          orange: 1,
-          apple: 1,
-          lemonade: 1.5,
-          cola: 1.5
-        }
-      },
-      methods: {
-        price (val) {
-          return '£' + parseFloat(val).toFixed(2)
-        }
-      },
-      created () {
-        firebase.database().ref('menu1').on('value', (snapshot) => {
-          this.menu1 = Object.assign({}, snapshot.val() || {
-            sandwich: 3,
-            hotdog: 4,
-            burger: 3.5,
-            bidBurger: 4.5
-          })
-        })
-        firebase.database().ref('menu2').on('value', (snapshot) => {
-          this.menu2 = Object.assign({}, snapshot.val() || {
-            fries: 1.2,
-            steak: 6.5,
-            pizaa: 5,
-            salad: 1
-          })
-        })
-        firebase.database().ref('drinks').on('value', (snapshot) => {
-          this.drinks = Object.assign({}, snapshot.val() || {
-            orange: 1,
-            apple: 1,
-            lemonade: 1.5,
-            cola: 1.5
-          })
-        })
-        firebase.database().ref('stock').on('value', (snapshot) => {
-          this.stock = Object.assign({}, snapshot.val() || {
-            pizza: false,
-            burger: false,
-            bidBurger: false,
-            sandwich: false,
-            hotdog: false,
-            drink: false,
-            salad: false,
-            steak: false,
-            fries: false
-          })
-        })
+    
+    // out-of-stock labels
+    var labels = {
+      pizza: document.getElementById('ofs-pizza'),
+      burger: document.getElementById('ofs-burger'),
+      bigBurger: document.getElementById('ofs-bigBurger'),
+      sandwich: document.getElementById('ofs-sandwich'),
+      hotdog: document.getElementById('ofs-hotdog'),
+      drink: document.getElementById('ofs-drink'),
+      salad: document.getElementById('ofs-salad'),
+      steak: document.getElementById('ofs-steak'),
+      fries: document.getElementById('ofs-fries')
+    }
+
+    // menu items
+    var menu1 = {
+      sandwich:  document.getElementById('sandwich'),
+      hotdog: document.getElementById('hotdog'),
+      burger: document.getElementById('burger'),
+      bigBurger: document.getElementById('bigBurger')
+    }
+    var menu2 = {
+      fries: document.getElementById('fries'),
+      steak: document.getElementById('steak'),
+      pizza: document.getElementById('pizza'),
+      salad: document.getElementById('salad')
+    }
+    var drinks = {
+      orange: document.getElementById('orange'),
+      apple: document.getElementById('apple'),
+      lemonade: document.getElementById('lemonade'),
+      cola: document.getElementById('cola')
+    }
+
+    var menuDOM = document.getElementsByClassName('menu')[0]
+    var stockDOM = document.getElementsByClassName('out-of-stock')[0]
+    var stockRowOneDOM = stockDOM.getElementsByClassName('one')[0]
+    var stockRowTwoDOM = stockDOM.getElementsByClassName('two')[0]
+    var priceDOM = document.getElementsByClassName('price')[0]
+    var priceColOneDOM = priceDOM.getElementsByClassName('one')[0]
+    
+    var isAncientBrowser = window.getComputedStyle(menuDOM).height === '0px'
+    if (isAncientBrowser) {
+      function cs(ele) {
+        return window.getComputedStyle(ele)
+      }
+      var vw = parseInt(cs(menuDOM).width)
+      var ratio = 4535 / 2551
+      var vh = vw * ratio
+  
+      menuDOM.style.height = vh + 'px'
+      stockDOM.style.top = 0.166 * vh + 'px'
+      var labelKeys = Object.keys(labels)
+      for (var i = 0; i < labelKeys.length; i++) {
+        var key = labelKeys[i]
+        labels[key].style.height = 0.13 * vw + 'px'
+      }
+      stockRowOneDOM.style.marginBottom = 0.072 * vh + 'px'
+      stockRowTwoDOM.style.marginBottom = 0.057 * vh + 'px'
+      priceDOM.style.top = 0.661 * vh + 'px'
+      priceColOneDOM.style.marginTop = -0.001 * vh + 'px'
+
+      marginBottom1 = 0.025 * vh + 'px'
+      marginBottom2 = 0.022 * vh + 'px'
+      marginBottom3 = 0.023 * vh + 'px'
+      menu1.sandwich.style.marginBottom = marginBottom1
+      menu2.fries.style.marginBottom = marginBottom1
+      drinks.orange.style.marginBottom = marginBottom1
+      menu1.hotdog.style.marginBottom = marginBottom2
+      menu2.steak.style.marginBottom = marginBottom2
+      drinks.apple.style.marginBottom = marginBottom2
+      menu1.burger.style.marginBottom = marginBottom3
+      menu2.pizza.style.marginBottom = marginBottom3
+      drinks.lemonade.style.marginBottom = marginBottom3
+    }
+
+    firebase.database().ref('menu1').on('value', function (snapshot) {
+      var data = snapshot.val() || {
+        sandwich: 3,
+        hotdog: 4,
+        burger: 3.5,
+        bigBurger: 4.5
+      }
+      
+      var keys = Object.keys(menu1)
+      for(var i = 0; i < keys.length; i++) {
+        var key = keys[i]
+        menu1[key].innerHTML = '£' + parseFloat(data[key]).toFixed(2)
+      }
+    })
+    firebase.database().ref('menu2').on('value', function (snapshot) {
+      var data = snapshot.val() || {
+        fries: 1.2,
+        steak: 6.5,
+        pizaa: 5,
+        salad: 1
+      }
+      var keys = Object.keys(menu2)
+      for(var i = 0; i < keys.length; i++) {
+        var key = keys[i]
+        menu2[key].innerHTML = '£' + parseFloat(data[key]).toFixed(2)
+      }
+    })
+    firebase.database().ref('drinks').on('value', function (snapshot) {
+      var data = snapshot.val() || {
+        orange: 1,
+        apple: 1,
+        lemonade: 1.5,
+        cola: 1.5
+      }
+      var keys = Object.keys(drinks)
+      for (var i = 0; i < keys.length; i++) {
+        var key = keys[i]
+        drinks[key].innerHTML = '£' + parseFloat(data[key]).toFixed(2)
+      }
+    })
+    firebase.database().ref('stock').on('value', function (snapshot) {
+      var data = snapshot.val() || {
+        pizza: false,
+        burger: false,
+        bigBurger: false,
+        sandwich: false,
+        hotdog: false,
+        drink: false,
+        salad: false,
+        steak: false,
+        fries: false
+      }
+      var keys = Object.keys(labels)
+      for(var i = 0; i < keys.length; i++) {
+        var key = keys[i]
+        labels[key].style.opacity = data[key] ? 0 : 1
       }
     })
   </script>

@@ -7,11 +7,10 @@
   <link rel="stylesheet" type="text/css" href="static/css/normalize.css">
   <link rel="stylesheet" type="text/css" href="static/css/style.css">
   <script src="https://www.gstatic.com/firebasejs/4.8.1/firebase.js"></script>
-  <script src="https://unpkg.com/vue"></script>
 </head>
 <body>
   <div id="app">
-    <div class="promotion" v-if="image" :style="{ backgroundImage: 'url(static/images/promotion-'+image+'.jpg)' }">
+    <div class="promotion" :style="{ backgroundImage:  }">
     </div>
   </div>
   <script>
@@ -20,18 +19,21 @@
       databaseURL: "https://jooku-5e3a7.firebaseio.com"
     };
     firebase.initializeApp(config);
-    var app = new Vue({
-      el: '#app',
-      data () {
-        return {
-          image: null
-        }
-      },
-      created () {
-        firebase.database().ref('promotion').on('value', snapshot => {
-          this.image = snapshot.val() || ''
-        })
+    var promoDOM = document.getElementsByClassName('promotion')[0]
+    var isAncientBrowser = window.getComputedStyle(promoDOM).height === '0px'
+    if (isAncientBrowser) {
+      function cs(ele) {
+        return window.getComputedStyle(ele)
       }
+      var vw = parseInt(cs(promoDOM).width)
+      var ratio = 4535 / 2551
+      var vh = vw * ratio
+
+      promoDOM.style.height = vh + 'px'
+    }
+    firebase.database().ref('promotion').on('value', function (snapshot) {
+      const imageName = snapshot.val() || ''
+      promoDOM.style.backgroundImage = 'url(static/images/promotion-'+imageName+'.jpg)'
     })
   </script>
 </body>
