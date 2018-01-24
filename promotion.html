@@ -19,18 +19,24 @@
       databaseURL: "https://jooku-5e3a7.firebaseio.com"
     };
     firebase.initializeApp(config);
+    function cs(ele) {
+      return window.getComputedStyle(ele)
+    }
+    function resetUI (isInit) {
+      if (isAncientBrowser) {
+        if (isInit) window.addEventListener("resize", resetUI)
+        var vw = parseInt(cs(promoDOM).width)
+        var ratio = 4535 / 2551
+        var vh = vw * ratio
+  
+        promoDOM.style.height = vh + 'px'
+      }
+    }
     var promoDOM = document.getElementsByClassName('promotion')[0]
     var isAncientBrowser = window.getComputedStyle(promoDOM).height === '0px'
-    if (isAncientBrowser) {
-      function cs(ele) {
-        return window.getComputedStyle(ele)
-      }
-      var vw = parseInt(cs(promoDOM).width)
-      var ratio = 4535 / 2551
-      var vh = vw * ratio
 
-      promoDOM.style.height = vh + 'px'
-    }
+    resetUI(true)
+
     firebase.database().ref('promotion').on('value', function (snapshot) {
       const imageName = snapshot.val() || ''
       promoDOM.style.backgroundImage = 'url(static/images/promotion-'+imageName+'.jpg)'

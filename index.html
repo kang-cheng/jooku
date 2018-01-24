@@ -51,13 +51,48 @@
     </div>
   </div>
   <script>
-    console.log('Is ancient browser?', isAncientBrowser)
     var config = {
       apiKey: "AIzaSyBL9qLwyeg0DMSyI1EnQJjdwSVrcYEFErY",
       databaseURL: "https://jooku-5e3a7.firebaseio.com"
     };
     firebase.initializeApp(config);
     
+    function cs(ele) {
+      return window.getComputedStyle(ele)
+    }
+    function resetUI (isInit) {
+      if (isAncientBrowser) {
+        if (isInit) window.addEventListener("resize", resetUI)
+        var vw = parseInt(cs(menuDOM).width)
+        var ratio = 4535 / 2551
+        var vh = vw * ratio
+    
+        menuDOM.style.height = vh + 'px'
+        stockDOM.style.top = 0.166 * vh + 'px'
+        var labelKeys = Object.keys(labels)
+        for (var i = 0; i < labelKeys.length; i++) {
+          var key = labelKeys[i]
+          labels[key].style.height = 0.13 * vw + 'px'
+        }
+        stockRowOneDOM.style.marginBottom = 0.072 * vh + 'px'
+        stockRowTwoDOM.style.marginBottom = 0.057 * vh + 'px'
+        priceDOM.style.top = 0.661 * vh + 'px'
+        priceColOneDOM.style.marginTop = -0.001 * vh + 'px'
+  
+        marginBottom1 = 0.025 * vh + 'px'
+        marginBottom2 = 0.022 * vh + 'px'
+        marginBottom3 = 0.023 * vh + 'px'
+        menu1.sandwich.style.marginBottom = marginBottom1
+        menu2.fries.style.marginBottom = marginBottom1
+        drinks.orange.style.marginBottom = marginBottom1
+        menu1.hotdog.style.marginBottom = marginBottom2
+        menu2.steak.style.marginBottom = marginBottom2
+        drinks.apple.style.marginBottom = marginBottom2
+        menu1.burger.style.marginBottom = marginBottom3
+        menu2.pizza.style.marginBottom = marginBottom3
+        drinks.lemonade.style.marginBottom = marginBottom3
+      }
+    }
     // out-of-stock labels
     var labels = {
       pizza: document.getElementById('ofs-pizza'),
@@ -97,41 +132,10 @@
     var stockRowTwoDOM = stockDOM.getElementsByClassName('two')[0]
     var priceDOM = document.getElementsByClassName('price')[0]
     var priceColOneDOM = priceDOM.getElementsByClassName('one')[0]
-    
-    var isAncientBrowser = window.getComputedStyle(menuDOM).height === '0px'
-    if (isAncientBrowser) {
-      function cs(ele) {
-        return window.getComputedStyle(ele)
-      }
-      var vw = parseInt(cs(menuDOM).width)
-      var ratio = 4535 / 2551
-      var vh = vw * ratio
-  
-      menuDOM.style.height = vh + 'px'
-      stockDOM.style.top = 0.166 * vh + 'px'
-      var labelKeys = Object.keys(labels)
-      for (var i = 0; i < labelKeys.length; i++) {
-        var key = labelKeys[i]
-        labels[key].style.height = 0.13 * vw + 'px'
-      }
-      stockRowOneDOM.style.marginBottom = 0.072 * vh + 'px'
-      stockRowTwoDOM.style.marginBottom = 0.057 * vh + 'px'
-      priceDOM.style.top = 0.661 * vh + 'px'
-      priceColOneDOM.style.marginTop = -0.001 * vh + 'px'
+    var isAncientBrowser = cs(menuDOM).height === '0px'
+    console.log('Is ancient browser?', isAncientBrowser)
 
-      marginBottom1 = 0.025 * vh + 'px'
-      marginBottom2 = 0.022 * vh + 'px'
-      marginBottom3 = 0.023 * vh + 'px'
-      menu1.sandwich.style.marginBottom = marginBottom1
-      menu2.fries.style.marginBottom = marginBottom1
-      drinks.orange.style.marginBottom = marginBottom1
-      menu1.hotdog.style.marginBottom = marginBottom2
-      menu2.steak.style.marginBottom = marginBottom2
-      drinks.apple.style.marginBottom = marginBottom2
-      menu1.burger.style.marginBottom = marginBottom3
-      menu2.pizza.style.marginBottom = marginBottom3
-      drinks.lemonade.style.marginBottom = marginBottom3
-    }
+    resetUI(true)
 
     firebase.database().ref('menu1').on('value', function (snapshot) {
       var data = snapshot.val() || {
